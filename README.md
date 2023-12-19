@@ -131,13 +131,13 @@ subgraph Application Repo
 
   subgraph Kubot
     helm(Helm Cart)
-    code(Application 
-    Code)
+    code("Application 
+      Code")
   end
 
   subgraph Actions
-    ht(Update 
-    Helm chart)
+    ht("Update 
+      Helm chart")
     bi(Build Image)
     bi-->ht
   end
@@ -159,8 +159,8 @@ artf-->tfa
 
 subgraph Kubot
   helm(Helm Cart)
-  code(Application 
-  Code)
+  code("Application 
+    Code")
 end
 
 ```
