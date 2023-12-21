@@ -128,34 +128,38 @@ subgraph Registry
 end
 
 subgraph Application Repo
-
   subgraph Kubot
-    helm(Helm Cart)
     code("Application 
       Code")
+    helm(Helm Cart)
   end
 
   subgraph Actions
     ht("Update 
       Helm chart")
     bi(Build Image)
+    bi-->|New Artefact|artf
     bi-->ht
   end
 
   code-->Actions
+ 
+  push(Chages)-->|Pull Request|code
   ht-->helm
-  bi-->|New Artefact|artf
-  push(Chages)--->|Pull Request|code
 
 end
 
-tfa-->cluster(Cluster)
-artf-.-helm
+subgraph Cluster
+  flux(flux-system)
+  artf-->flux
+  artf-.->helm
+end
+
 tfc-->tfa(terraform)
-tfa<--->flux(flux)
+tfa-->Cluster
+tfa-->flux
 flux<-->cs
 helm-.->flux
-artf-->tfa
 
 subgraph Kubot
   helm(Helm Cart)
