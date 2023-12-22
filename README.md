@@ -108,65 +108,58 @@ Flux відстежує зміни в репозиторії GitOps та змі�
 За наявності таких змін Flux доставляє нову версію застосунку в кластер.
 
 ```mermaid
-graph LR
 
-subgraph Terraform & Flux
+flowchart LR
 
-  subgraph Flux GitOps Repo
-    cs(Cluster State)
-  end
-
-  subgraph Terraform Repo
-    tfc("Infrastructure 
-  as Code")
-  end
-
+subgraph ar["Application Code Repo"]
+    subgraph ga["Github Actions"]
+        update_helm("Update Helm Chart")
+        build_img("Build Image")
+    end
+    subgraph app["Application"]
+        code("Code")
+        hc("Helm")
+    end
 end
 
-subgraph Registry
-  artf(Image)
+subgraph reg["Image Registry"]
+    img("Image")
 end
 
-subgraph Application Repo
-  subgraph Kubot
-    code("Application 
-      Code")
-    helm(Helm Cart)
-  end
-
-  subgraph Actions
-    ht("Update 
-      Helm chart")
-    bi(Build Image)
-    bi-->|New Artefact|artf
-    bi-->ht
-  end
-
-  code-->Actions
- 
-  push(Chages)-->|Pull Request|code
-  ht-->helm
-
+subgraph CLIs
+    tf("terrafom") 
+    flux("flux")
+    %% gcloud("gcloud")
+    %% gsutils("gsutils")
 end
 
-subgraph Cluster
-  flux(flux-system)
-  artf-->flux
-  artf-.->helm
+subgraph tffx["Terraform & Flux"]
+    direction LR
+    go("Repo
+    GitOps")
+    iac("Repo
+    Infrastructure as Code")
 end
 
-tfc-->tfa(terraform)
-tfa-->Cluster
-tfa-->flux
-flux<-->cs
-helm-.->flux
-
-subgraph Kubot
-  helm(Helm Cart)
-  code("Application 
-    Code")
+subgraph cluster[Cluster]
+    other1("…")
+    other2("…")
+    fx("flux-controller")
 end
 
+
+pr("Changes") --> app & iac & go
+code --> ga
+iac --> tf --> fx & other1 & other2 
+flux --> fx
+img -.-> hc & fx 
+update_helm --> hc
+build_img --> update_helm 
+build_img --> img 
+hc -->fx 
+fx <--> go
+
+tf -.-> cluster
 ```
 
 В разі внесення змін в опис ресурсів контейнера за допомогою Infracost (через GitHub Actions цього репо) виконується розрахунок можливих змін витрат на інфраструктуру. Якщо ці зміни відповідають нашим вимогам – виконуємо їх злиття в основну гілку та застосовуємо їх для оновлення інфраструктури.[^1]
