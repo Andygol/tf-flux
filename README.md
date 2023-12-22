@@ -113,53 +113,56 @@ flowchart LR
 
 subgraph ar["Application Code Repo"]
     subgraph ga["Github Actions"]
-        update_helm("Update Helm Chart")
-        build_img("Build Image")
+        update_helm("Update Helm Chart fas:fa-arrows-rotate")
+        build_img("Build Image fa:fa-hard-drive")
     end
     subgraph app["Application"]
-        code("Code")
-        hc("Helm")
+        code("Code fa:fa-code")
+        hc("Helm fa:fa-file-invoice")
     end
 end
 
-subgraph reg["Image Registry"]
-    img("Image")
+subgraph reg["Image Registry far:fa-server"]
+    img("Image fas:fa-database")
 end
 
-subgraph CLIs
-    tf("terrafom") 
-    flux("flux")
+subgraph cli["CLIs fas:fa-toolbox"]
+    tf("terrafom fas:fa-screwdriver-wrench") 
+    flux("flux fas:fa-trowel-bricks")
     %% gcloud("gcloud")
     %% gsutils("gsutils")
 end
 
 subgraph tffx["Terraform & Flux"]
     direction LR
-    go("Repo
+    go("Repo fa:fa-code
     GitOps")
-    iac("Repo
+    iac("Repo fa:fa-code
     Infrastructure as Code")
 end
 
-subgraph cluster[Cluster]
-    other1("…")
-    other2("…")
-    fx("flux-controller")
+subgraph cluster["Cluster fas:fa-circle-nodes"]
+    other1("… fas:fa-gears")
+    other2("… fas:fa-gears")
+    fx("flux-controller fas:fa-gears")
 end
 
 
-pr("Changes") --> app & iac & go
+pr("Changes fas:fa-code-pull-request") --> app & go & iac
 code --> ga
 iac --> tf --> fx & other1 & other2 
 flux --> fx
-img -.-> hc & fx 
+img -.-> fx & hc 
 update_helm --> hc
-build_img --> update_helm 
-build_img --> img 
+build_img --> img & update_helm 
+%% build_img --> update_helm 
 hc -->fx 
-fx <--> go
+fx <--> go 
+
+other1 & other2 -.- fx
 
 tf -.-> cluster
+
 ```
 
 В разі внесення змін в опис ресурсів контейнера за допомогою Infracost (через GitHub Actions цього репо) виконується розрахунок можливих змін витрат на інфраструктуру. Якщо ці зміни відповідають нашим вимогам – виконуємо їх злиття в основну гілку та застосовуємо їх для оновлення інфраструктури.[^1]
