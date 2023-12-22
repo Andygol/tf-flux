@@ -15,11 +15,14 @@ module "gke_cluster" {
 }
 
 module "flux_bootstrap" {
-  source            = "github.com/den-vasyliev/tf-fluxcd-flux-bootstrap"
+  source            = "github.com/Andygol/tf-fluxcd-gcloud-flux-bootstrap"
   github_repository = "${var.GITHUB_OWNER}/${var.FLUX_GITHUB_REPO}"
   github_token      = var.GITHUB_TOKEN
   private_key       = module.tls_private_key.private_key_pem
   config_path       = module.gke_cluster.kubeconfig
+  cluster_name      = var.GKE_CLUSTER_NAME
+  cluster_region    = var.GOOGLE_REGION
+  cluster_project   = var.GOOGLE_PROJECT
 }
 
 module "tls_private_key" {
