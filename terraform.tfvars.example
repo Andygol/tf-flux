@@ -1,0 +1,4 @@
+github_owner = "username"
+github_token = "ghp_0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+repository_name = "flux-gitops"
+google_project  = "GCP project id"
