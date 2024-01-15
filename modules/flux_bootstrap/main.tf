@@ -37,5 +37,6 @@ provider "flux" {
 }
 
 resource "flux_bootstrap_git" "this" {
-  path = "clusters/${var.cluster_name}"
+  path                   = "clusters/${var.cluster_name}"
+  kustomization_override = file("${path.module}/kustomization.yaml")
 }
