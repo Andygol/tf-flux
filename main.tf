@@ -190,6 +190,11 @@ resource "null_resource" "cluster_credentials" {
 }
 
 resource "null_resource" "gitops_destroy" {
+      depends_on = [
+      null_resource.git_commit,
+      module.flux_bootstrap
+    ]
+    
   triggers = {
     repo_name = module.github_repository.values.name
   }
